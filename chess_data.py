@@ -13,10 +13,17 @@ class ChessBoard:
                       [0, 0, 0, 0, 0, 0, 0, 0],  # 2
                       [0, 0, 0, 0, 0, 0, 0, 0]]  # 1
 
+        #  Used for converting the coordinates of the board
         self.board_letters = {'A': 0, 'B': 1, 'C': 2, 'D': 3,
                               'E': 4, 'F': 5, 'G': 6, 'H': 7}
 
         self.piece_list = []
+
+    def __str__(self):
+        board_state = []
+        for row in self.board:
+            board_state.append(str(row) + "\n")
+        return ''.join(board_state)
 
     # This function takes in a string like "A1" and converts it into
     # coordinates to be used by the array
@@ -25,9 +32,9 @@ class ChessBoard:
         if len(location) == 2:
             for spot in location:
                 value.append(spot)
-            hor_location = self.board_letters[value[0]]
-            vert_location = 8 - int(value[1])
-            return [vert_location, hor_location]
+            hor = self.board_letters[value[0]]
+            vert = 8 - int(value[1])
+            return [vert, hor]
 
     def board_input(self, location: list, obj=None):
         vert = location[0]
@@ -35,6 +42,7 @@ class ChessBoard:
         if self.board[vert][hor]:
             self.piece_list.append(self[vert][hor])
         self.board[location[0]][location[1]] = obj
+        return self.board[vert][hor]
 
     def board_output(self, location: str):
         vert = location[0]
@@ -42,5 +50,12 @@ class ChessBoard:
         return self.board[vert][hor]
 
 
+# Create an interface for the movement of pieces
+class GamePiece:
+    def __init__(self):
+        pass
+
+
 if __name__ == '__main__':
-    pass
+    c = ChessBoard()
+    print(c)
