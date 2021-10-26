@@ -52,10 +52,25 @@ class ChessBoard:
 
 # Create an interface for the movement of pieces
 class GamePiece:
-    def __init__(self):
-        pass
+    def __init__(self, side, identification):
+        self.side = side
+        self.id = identification
+
+
+class Pawn(GamePiece):
+    def __init__(self, side, identification):
+        super().__init__(side, identification)
+
+    def movement(self):
+        if self.side is True:
+            pass
+
+        elif self.side is False:
+            pass
+
+
+
 
 
 if __name__ == '__main__':
-    c = ChessBoard()
-    print(c)
+    pass
