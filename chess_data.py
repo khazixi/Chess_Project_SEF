@@ -44,13 +44,19 @@ class ChessBoard:
         self.board[location[0]][location[1]] = obj
         return self.board[vert][hor]
 
-    def board_output(self, location: str):
-        vert = location[0]
-        hor = location[1]
-        return self.board[vert][hor]
+    def board_get_postion(self, piece: str) -> tuple:
+        for vert, data in enumerate(self.board):
+            if data.index(piece) == '':
+                return vert, data.index(piece)
 
 
-# Create an interface for the movement of pieces
+"""
+The goal of this should be too ensure that every piece has an individual id
+This makes it so that it is easier to locate the peice within the array and
+then manipulate its postion from within the class
+"""
+
+
 class GamePiece:
     def __init__(self, side, identification):
         self.side = side
@@ -58,18 +64,27 @@ class GamePiece:
 
 
 class Pawn(GamePiece):
+    id_number = 0
+
     def __init__(self, side, identification):
         super().__init__(side, identification)
+        self.name = 'pawn_'
+        Pawn.id_number += 1
+
+    def __str__(self):
+        return self.name + str(Pawn.id_number)
 
     def movement(self):
         if self.side is True:
-            pass
+            initial_position = list(ChessBoard().board_get_position(Pawn.id_number))
+            final_position = [initial_position[0] + 1, initial_position[1]]
+            ChessBoard().board_input(final_position, Pawn.id_number)
 
         elif self.side is False:
-            pass
 
-
-
+            initial_position = list(ChessBoard().board_get_position(Pawn.id_number))
+            final_position = [initial_position[0] - 1, initial_position[1]]
+            ChessBoard().board_input(final_position, Pawn.id_number)
 
 
 if __name__ == '__main__':
