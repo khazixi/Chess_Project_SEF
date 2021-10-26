@@ -1,4 +1,13 @@
-# This data contains the board and string data
+"""
+This function declares the ChessBoard class
+This class is meant to hold the positions of all the pieces on the board
+This board has methods for multiple things:
+        - returning the state of the board
+        - inputting the selected piece into the proper spot
+        - returning the spot of a particular piece
+        - storing overwritten pieces into a list of taken pieces
+"""
+
 
 class ChessBoard:
     def __init__(self):
@@ -13,10 +22,7 @@ class ChessBoard:
                       [0, 0, 0, 0, 0, 0, 0, 0],  # 2
                       [0, 0, 0, 0, 0, 0, 0, 0]]  # 1
 
-        #  Used for converting the coordinates of the board
-        self.board_letters = {'A': 0, 'B': 1, 'C': 2, 'D': 3,
-                              'E': 4, 'F': 5, 'G': 6, 'H': 7}
-
+        # Used for storing the pieces that are overridden by move commands
         self.piece_list = []
 
     def __str__(self):
@@ -25,29 +31,45 @@ class ChessBoard:
             board_state.append(str(row) + "\n")
         return ''.join(board_state)
 
-    # This function takes in a string like "A1" and converts it into
-    # coordinates to be used by the array
-    def location_conversion(self, location: str) -> list:
-        value = []
+    def board_input(self, location: list, obj):
         if len(location) == 2:
-            for spot in location:
-                value.append(spot)
-            hor = self.board_letters[value[0]]
-            vert = 8 - int(value[1])
-            return [vert, hor]
-
-    def board_input(self, location: list, obj=None):
-        vert = location[0]
-        hor = location[1]
-        if self.board[vert][hor]:
-            self.piece_list.append(self[vert][hor])
-        self.board[location[0]][location[1]] = obj
-        return self.board[vert][hor]
+            vert = location[0]
+            hor = location[1]
+            if self.board[vert][hor]:
+                self.piece_list.append(self[vert][hor])
+            self.board[location[0]][location[1]] = obj
+            return self.board[vert][hor]
 
     def board_get_postion(self, piece: str) -> tuple:
         for vert, data in enumerate(self.board):
             if data.index(piece) == '':
                 return vert, data.index(piece)
+
+    # The following 2 functions are staticmethods
+    # This is because they should serve as standalone functions that come
+    # with the class during the import rather than relying on the class
+    @staticmethod
+    def location_letter_conversion(location: str) -> list:
+        value = []
+        conversion_symbols = {'A': 0, 'B': 1, 'C': 2, 'D': 3,
+                              'E': 4, 'F': 5, 'G': 6, 'H': 7}
+        if len(location) == 2:
+            for spot in location:
+                value.append(spot)
+            hor = conversion_symbols[value[0]]
+            vert = 8 - int(value[1])
+            return [vert, hor]
+
+    @staticmethod
+    def location_array_conversion(location: list) -> str:
+        value = []
+        conversion_symbols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+        if len(location) == 2:
+            for spot in location:
+                value.append(spot)
+            hor = conversion_symbols[value[0]]
+            ver = 8 - value[1]
+            return hor + str(ver)
 
 
 """
@@ -64,27 +86,36 @@ class GamePiece:
 
 
 class Pawn(GamePiece):
+    # This is used for the creation of a unique ID for the pieces
     id_number = 0
 
     def __init__(self, side, identification):
         super().__init__(side, identification)
-        self.name = 'pawn_'
+
+        # These lines are used for creating a unique ID for each piece
+        # upon every intialization of the class
+        piece_name = 'pawn_'
         Pawn.id_number += 1
+        self.name = piece_name + str(Pawn.id_number)
 
     def __str__(self):
-        return self.name + str(Pawn.id_number)
+        return self.name
 
-    def movement(self):
+        # double move and diagonal move need to be implemented
+    def forward_movement(self):
         if self.side is True:
-            initial_position = list(ChessBoard().board_get_position(Pawn.id_number))
-            final_position = [initial_position[0] + 1, initial_position[1]]
-            ChessBoard().board_input(final_position, Pawn.id_number)
+            ipos = list(ChessBoard().board_get_position(self.name))
+            fpos = [ipos[0] + 1, ipos[1]]
+            ChessBoard().board_input(fpos, self.name)
+            return f'{self.name} was inserted at {fpos}'
 
         elif self.side is False:
+            ipos = list(ChessBoard().board_get_position(self.name))
+            fpos = [ipos[0] - 1, ipos[1]]
+            ChessBoard().board_input(fpos, self.name)
 
-            initial_position = list(ChessBoard().board_get_position(Pawn.id_number))
-            final_position = [initial_position[0] - 1, initial_position[1]]
-            ChessBoard().board_input(final_position, Pawn.id_number)
+    def diagonal_movement(self):
+        pass
 
 
 if __name__ == '__main__':
