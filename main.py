@@ -2,7 +2,7 @@
 This is the Chess board project
 Hello
 
---Jason
+--Jason & Omar
 """
 
 
